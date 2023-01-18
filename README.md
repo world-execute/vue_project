@@ -1,19 +1,7 @@
-# vue_project_3
+# 物资分配管理系统(前台)
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 简介
+`vue` + `Element-ui`搭建的物资管理系统,包含了用户使用界面与后台管理界面  
+## 技术栈
+## 功能缩略
+## 功能结构图
