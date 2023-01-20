@@ -17,9 +17,10 @@
             <el-form-item label="密码" prop="password">
               <el-input v-model="loginForm.password"></el-input>
             </el-form-item>
+            <el-checkbox v-model="rememberMe">记住我,下次自动登录</el-checkbox>
             <el-form-item class="form-button-group">
-              <el-button type="primary">登录</el-button>
-              <el-button>重置</el-button>
+              <el-button type="primary" @click="submitForm">登录</el-button>
+              <el-button @click="resetForm">重置</el-button>
               <el-button type="info">忘记密码</el-button>
             </el-form-item>
           </el-form>
@@ -45,11 +46,53 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
         ],
-      }
+      },
+      rememberMe:false
     }
   },
   methods:{
+    submitForm(){
+      this.$refs['refLoginForm'].validate(valid => {
+        if(valid){
+          this.$request('login','post',this.loginForm).then(value => {
+            if(value.status === 404){
+              return this.$message.error('用户名不存在')
+            }
+            if(value.status === 403){
+              return this.$message.error('密码错误,请重试')
+            }
+            this.$message.success('登录成功')
+            if(this.rememberMe){
+              localStorage.setItem('token',value.data.token)
+              sessionStorage.setItem('user_info',JSON.stringify(value.data.user))
+            }
+            sessionStorage.setItem('token',value.data.token)
+            sessionStorage.setItem('user_info',JSON.stringify(value.data.user))
+            this.$router.push('user')
+          }).catch(err => {
+            console.log(err)
+          })
+        }else {
+          this.$message.error('请完整填写信息')
+        }
+      })
+    },
+    resetForm(){
+      this.$refs['refLoginForm'].resetFields()
+    }
+  },
+  created() {
+    if(localStorage.getItem('token')){
+      this.$request('login/check','post').then(value => {
+        console.log(value)
+        this.$message.success('自动登录成功,欢迎您')
+        this.$router.push('user')
 
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('token校验失败,请重新登录')
+      })
+    }
   }
 }
 </script>
@@ -85,5 +128,12 @@ export default {
 }
 .el-form-item__content{
   display: flex;
+}
+.el-form-item{
+  margin-bottom: 10px;
+}
+.el-checkbox{
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 </style>

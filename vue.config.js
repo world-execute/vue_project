@@ -7,13 +7,13 @@ module.exports = defineConfig({
   },
 
   // webpack相关
-  configureWebpack:{
-    // 解析
-    resolve:{
-      // 路径别名
-      alias:{
-
-      }
-    }
-  }
+  // configureWebpack:{
+  //   // 解析
+  //   resolve:{
+  //     // 路径别名
+  //     alias:{
+  //       "User":path.resolve(__dirname,'src/views/user'),
+  //     }
+  //   }
+  // }
 })
