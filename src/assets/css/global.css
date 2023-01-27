@@ -9,4 +9,6 @@ html,body{
 .el-card__body{
     padding: 0;
 }
-
+.el-input__prefix{
+    margin-left: 5px;
+}

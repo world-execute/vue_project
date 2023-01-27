@@ -28,10 +28,25 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+const whiteList = ['/login','/404']
 
 router.beforeEach(((to, from, next) => {
   NProgress.start()
-  next()
+  const token = window.sessionStorage.getItem('token')
+  if(token){
+    if(to.path === '/login'){
+      next(from.path)
+    }else {
+      next()
+    }
+  }else {
+    if(whiteList.indexOf(to.path) > -1){
+      next()
+    }else {
+      next('/login')
+    }
+  }
+  NProgress.done()
 }))
 
 router.afterEach(() => {
