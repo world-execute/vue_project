@@ -2,7 +2,7 @@
   <!--我是不想写注释的,毕业设计罢了,但是后面自己改起来也好麻烦,还是加上吧-->
   <div id="login">
     <!--登录面板-->
-    <el-card class="form-window" v-if="!lostPwdVisible" shadow="hover">
+    <el-card class="form-window" v-show="!lostPwdVisible" shadow="hover">
         <el-row>
           <!--用户的侧边栏图片-->
           <el-col :span="employeeLogin?0:12">
@@ -58,7 +58,7 @@
         </el-row>
       </el-card>
     <!--忘记密码面板-->
-    <el-card class="lost-pwd-window" v-if="lostPwdVisible">
+    <el-card class="lost-pwd-window" v-show="lostPwdVisible">
       <el-row>
         <el-col :span="23">
           <span style="font-size: 20px">用户恢复密码</span>
@@ -146,7 +146,6 @@
 </template>
 
 <script>
-import lostPwd from "@/components/LostPwd";
 export default {
   name: "Login",
   data() {
@@ -237,10 +236,10 @@ export default {
             this.$message.success('登录成功')
             if(this.rememberMe){
               localStorage.setItem('token',value.data.token)
-              sessionStorage.setItem('user_info',JSON.stringify(value.data.user))
+              sessionStorage.setItem('user_id',value.data.user._id)
             }
             sessionStorage.setItem('token',value.data.token)
-            sessionStorage.setItem('user_info',JSON.stringify(value.data.user))
+            sessionStorage.setItem('user_id',value.data.user._id)
             this.$router.push('user')
           }).catch(err => {
             this.$message.error('请求失败,请稍后再试')
@@ -320,16 +319,14 @@ export default {
       this.$request('login/check','post').then(value => {
         console.log(value)
         this.$message.success('自动登录成功,欢迎您')
-        this.$router.push('user')
+        sessionStorage.setItem('user_info',JSON.stringify(value.data))
+        this.$router.push('/user')
 
       }).catch(err => {
         console.log(err)
         this.$message.error('token校验失败,请重新登录')
       })
     }
-  },
-  components:{
-    'lost-pwd':lostPwd
   }
 }
 </script>

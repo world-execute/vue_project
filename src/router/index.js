@@ -32,9 +32,10 @@ const whiteList = ['/login','/404']
 
 router.beforeEach(((to, from, next) => {
   NProgress.start()
-  const token = window.sessionStorage.getItem('token')
+  // debugger
+  const token = window.sessionStorage.getItem('token') || window.localStorage.getItem('token')
   if(token){
-    if(to.path === '/login'){
+    if(to.path === '/login' && from.path!== '/'){
       next(from.path)
     }else {
       next()

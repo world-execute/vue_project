@@ -52,16 +52,39 @@ instance.interceptors.response.use(function (response) {
 });
 
 // 请求方法
-const request = (url,method,data,query) => {
-    return new Promise((resolve, reject) => {
-        instance[method](url,data,{
-            params:query
-        }).then(res => {
-            resolve(res.data)
-        }).catch(err => {
-            reject(err)
+const request = (url,method,payload) => {
+    if(method === 'post' || method === 'put'){
+        return new Promise((resolve, reject) => {
+            let data = payload
+            let query = {}
+            if(payload.data){
+                data = payload.data
+            }
+            if(payload.query){
+                query = payload.query
+            }
+            instance[method](url,data,{
+                params:query
+            }).then(res => {
+                resolve(res.data)
+            }).catch(err => {
+                reject(err)
+            })
         })
-    })
+    }
+    if(method === 'get' || method === 'delete'){
+        return new Promise((resolve, reject) => {
+            instance[method](url,{
+                params:payload
+            }).then(res => {
+                resolve(res.data)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+    return new Promise((resolve, reject) => {reject('请求方式错误')})
+
 }
 
 export default request
