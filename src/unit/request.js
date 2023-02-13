@@ -52,7 +52,7 @@ instance.interceptors.response.use(function (response) {
 });
 
 // 请求方法
-const request = (url,method,payload) => {
+const request = (url,method,payload={}) => {
     if(method === 'post' || method === 'put'){
         return new Promise((resolve, reject) => {
             let data = payload

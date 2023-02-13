@@ -253,6 +253,8 @@ export default {
       this.$refs['refLoginForm'].resetFields()
     },
     changeLogin(){
+      this.loginForm.username = ''
+      this.loginForm.password = ''
       this.employeeLogin = !this.employeeLogin
     },
     // 忘记密码功能区

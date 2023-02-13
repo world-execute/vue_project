@@ -8,7 +8,8 @@ import animate from 'animate.css'
 import {
     Form,FormItem,Input,Card,Row,Col,Button,Message,
     Checkbox,Switch,Link,Avatar,Descriptions,DescriptionsItem,
-    Tag,Progress,MessageBox,Dialog,Tabs,TabPane,Upload
+    Tag,Progress,MessageBox,Dialog,Tabs,TabPane,Upload,Table,TableColumn,
+    Pagination,Cascader,InputNumber
 } from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -32,6 +33,11 @@ Vue.use(Dialog)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Upload)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Pagination)
+Vue.use(Cascader)
+Vue.use(InputNumber)
 Vue.prototype.$message = Message
 Vue.prototype.$request = request
 Vue.prototype.$confirm = MessageBox.confirm
