@@ -160,9 +160,38 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="物资申请记录">
+              <el-row>
+                <el-col :span="16">
+                  <el-select v-model="getDistributionParams.status"
+                             clearable placeholder="配送状态筛选"
+                             style="width: 150px"
+                             @change="getDistribution"
+                  >
+                    <el-option v-for="item in distributionStatus"
+                               :value="item.value" :label="item.label"
+                               :key="item.value">
+                    </el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="8">
+                  <el-switch
+                      v-model="getDistributionParams.is_accept"
+                      active-text="审核通过"
+                      @change="getDistribution">
+                  </el-switch><br>
+                  <el-switch
+                      v-model="getDistributionParams.sort"
+                      active-text="从旧到新排序"
+                      active-value="old"
+                      inactive-value="new"
+                      @change="getDistribution"
+                  >
+                  </el-switch>
+                </el-col>
+              </el-row>
               <el-table
                 :data="distributionInfo.distributionList"
-                style="width: 100%;"
+                style="width: 100%;margin-top: 10px"
                 stripe
                 border
               >
@@ -236,9 +265,89 @@
             </el-tab-pane>
             <el-tab-pane label="配额申请">
               <!--TODO 配额申请开发ing-->
+              <el-alert
+                  title="提高配额申请"
+                  type="info"
+                  :closable="false"
+                  show-icon
+                  description="您可以自己填写提高配额的原因,或是选择一些符合您描述的文字选项">
+              </el-alert>
+              <el-form
+                :model="quotaChangeForm" :rules="quotaChangeFormRules" ref="quotaChangeForm"
+                style="margin-top: 10px"
+              >
+                <el-form-item label="申请原因" prop="reason">
+                  <el-input
+                      type="textarea"
+                      placeholder="提高配额申请原因"
+                      v-model="quotaChangeForm.reason"
+                      maxlength="30"
+                      show-word-limit
+                  >
+                  </el-input>
+                </el-form-item>
+              </el-form>
+              <p style="color: #409EFF;font-size:15px;margin-top: 10px">相关申请原因建议如下:</p>
+              <div style="margin-top: 10px">
+                <el-tag v-for="item in this.quotaChangesSuggest" @click="quotaTagClickHandler(item)" :closable="false" style="margin-right: 10px">
+                  {{item}}
+                </el-tag>
+              </div>
+              <p style="color: #000000;font-size:15px;margin-top: 10px">
+                申请新的配额
+                <span style="color: #409EFF;font-size: 12px">
+                  (申请新的配额不可以和当前配额相等)
+                </span>
+              </p>
+              <el-slider
+                  v-model="quotaChangeForm.new_ration"
+                  :min="userinfo.ration"
+                  style="margin-left: 10px"
+                  show-input>
+              </el-slider>
+              <el-button type="primary" style="margin-top:15px;float: right"
+                         @click="uploadChangeQuota"
+              >提交配额申请记录
+              </el-button>
             </el-tab-pane>
             <el-tab-pane label="配额申请记录">
-
+              <el-table
+                :data="quotaChangesInfo" stripe border
+              >
+                <el-table-column type="expand" label="详情" width="60">
+                  <template slot-scope="{row}">
+                    <div style="padding: 10px">
+                      <el-descriptions :column="2" border>
+                        <el-descriptions-item label="业主真实姓名">{{row.user_id.real_name}}</el-descriptions-item>
+                        <el-descriptions-item label="手机号">{{row.user_id.phone}}</el-descriptions-item>
+                        <template v-if="row.employee_id">
+                          <el-descriptions-item label="业务员姓名">{{row.employee_id.real_name}}</el-descriptions-item>
+                          <el-descriptions-item label="业务员手机号码">{{row.employee_id.phone}}</el-descriptions-item>
+                        </template>
+                        <el-descriptions-item label="配额变更原因">
+                          <span style="color:#409cfb;">
+                            {{row.reason}}
+                          </span>
+                        </el-descriptions-item>
+                      </el-descriptions>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="创建时间">
+                  <template slot-scope="{row}">
+                    {{row.create_time | transformUtc}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="新配额" align="center"
+                                 width="80" prop="new_ration">
+                </el-table-column>
+                <el-table-column label="审核情况" width="120" align="center">
+                  <template slot-scope="{row}">
+                    <el-tag type="success" v-if="row.is_accept">审核已通过</el-tag>
+                    <el-tag type="warning" v-else>审核未通过</el-tag>
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -260,7 +369,7 @@
             <el-col :span="7">
               <el-cascader :options="cateInfo" :props="cascadeParams"  placeholder="物资分类"
                            :show-all-levels='false' clearable v-model="materParam.type"
-                           @change="getMaterialInfo"
+                           @change="getMaterialInfo" style="width: 120px"
               ></el-cascader>
             </el-col>
           </el-row>
@@ -465,8 +574,48 @@ export default {
         total:0,
         distributionList:[]
       },
+      // 物资申请表状态筛选
+      distributionStatus:[
+        {
+          value: 0,
+          label:'等待审核'
+        }, {
+          value: 1,
+          label: '正在准备物资'
+        }, {
+          value: 2,
+          label: '正在配送'
+        }, {
+          value: 3,
+          label: '物资配送完成'
+        }, {
+          value: -1,
+          label: '配送提前结束'
+        }
+      ],
+      // 获取物资申请筛选参数
+      getDistributionParams:{
+        user_id:'',
+        status:'',
+        is_accept: false,
+        sort:'new',
+      },
       // 配额变更申请记录
-      quotaChangesInfo:[]
+      quotaChangesInfo:[],
+      // 配额变更申请表单
+      quotaChangeForm:{
+        reason:'',
+        new_ration:0,
+      },
+      quotaChangeFormRules:{
+        reason: {required:true,message: '请输入申请原因',trigger: 'blur'}
+      },
+      // 配额变更申请建议
+      quotaChangesSuggest:[
+          '家庭成员众多;',
+          '特殊物资紧缺;',
+          '家庭成员生病,急需物资;',
+      ],
     }
   },
   methods:{
@@ -531,6 +680,8 @@ export default {
       const user_id = sessionStorage.getItem('user_id') || localStorage.getItem('user_id')
       this.$request(`user/${user_id}`,'get').then(result => {
         this.userinfo = result.data
+      }).catch(reason => {
+        console.log(reason)
       })
     },
     // 修改用户信息
@@ -584,6 +735,13 @@ export default {
     },
     // 点击添加物资
     addMaterial(row){
+      if(!this.userInfoDone){
+        return this.$alert('请完善信息(手机号码和地址)后再添加物资','提示',{
+          confirmButtonText:'确定'
+        }).then(() => {
+          this.changeUserDialogVisible = true
+        })
+      }
       for (let i = 0,len = this.selectMaterial.length; i <len ; i++) {
         if(this.selectMaterial[i].id === row._id) return this.$message.info('您已添加过该物资')
       }
@@ -619,24 +777,65 @@ export default {
       })
       this.$request(`user/${this.userinfo._id}`,'put',{
         ration:this.userinfo.ration-this.totalPrice
+      }).then(value => {
+        if(value.status === 201){
+          return this.userinfo = value.data
+        }
+        this.$message.error('配额修改失败')
       })
-      this.getUserInfo()
     },
     // 获取物资申请记录
     getDistribution(){
-      this.$request('distribution','get',{
-        user_id:this.userinfo._id,
-        sort:'new'
-      }).then(value => {
+      this.getDistributionParams.user_id = this.userinfo._id
+      this.$request('distribution','get',this.getDistributionParams)
+          .then(value => {
         this.distributionInfo.distributionList = value.data.result
         this.distributionInfo.total = value.data.total
       })
     },
+    // 配额建议Tag点击事件
+    quotaTagClickHandler(tagItem){
+      this.quotaChangeForm.reason += tagItem
+    },
+    // 发送提高配额申请
+    uploadChangeQuota(){
+      this.$refs["quotaChangeForm"].validate(valid => {
+        if(valid){
+          if(this.quotaChangeForm.new_ration === this.userinfo.ration){
+            return this.$message.info('申请新的配额和当前配额相等')
+          }
+          this.quotaChangeForm.user_id = this.userinfo._id
+          this.$request('quota-change','post',this.quotaChangeForm).then(value => {
+            if(value.status === 201){
+              this.quotaChangeForm.new_ration = 0
+              this.quotaChangeForm.reason = ''
+              this.tabIndex = 0
+              return this.$message.success('配额申请提交成功')
+            }
+            this.$message.error('配额申请提交失败,请重试')
+          })
+        }
+      })
+    },
     // 获取配额申请记录
+    getQuotaChanges(){
+      this.$request('quota-change','get',{
+        user_id:this.userinfo._id,
+        sort:'new'
+      }).then(value => {
+        if(value.status === 200){
+          return this.quotaChangesInfo = value.data.result
+        }
+        this.$message.error('获取配额变更记录失败')
+      })
+    },
     // 标签页被点击后触发
     tabClickHandler(tab){
       if(tab.label === '物资申请记录'){
         this.getDistribution()
+      }
+      if(tab.label === '配额申请记录'){
+        this.getQuotaChanges()
       }
     }
   },
@@ -654,6 +853,10 @@ export default {
         total += this.selectMaterial[i].price*this.selectMaterial[i].quantity
       }
       return total
+    },
+    // 判断用户配是否完成关键信息的填写
+    userInfoDone(){
+      return this.userinfo.address !== '' && this.userInfo.phone !== ''
     },
     // 判断用户配额是否足够本次申请
    enoughQuota(){

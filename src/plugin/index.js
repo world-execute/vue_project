@@ -9,7 +9,7 @@ import {
     Form,FormItem,Input,Card,Row,Col,Button,Message,
     Checkbox,Switch,Link,Avatar,Descriptions,DescriptionsItem,
     Tag,Progress,MessageBox,Dialog,Tabs,TabPane,Upload,Table,TableColumn,
-    Pagination,Cascader,InputNumber
+    Pagination,Cascader,InputNumber,Alert,Slider,Select,Option
 } from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -38,9 +38,14 @@ Vue.use(TableColumn)
 Vue.use(Pagination)
 Vue.use(Cascader)
 Vue.use(InputNumber)
+Vue.use(Alert)
+Vue.use(Slider)
+Vue.use(Select)
+Vue.use(Option)
 Vue.prototype.$message = Message
 Vue.prototype.$request = request
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$alert = MessageBox.alert
 
 Vue.use(SlideVerify);
 // 导入字体图标
