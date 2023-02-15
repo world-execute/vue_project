@@ -2,7 +2,7 @@
   <div class="user-main">
     <el-row :gutter="10" style="min-width: 1700px">
       <!--左侧用户信息和操作栏-->
-      <el-col :span="8" style="">
+      <el-col :span="9" style="">
         <!--用户卡片-->
         <el-card class="user-card">
           <el-row>
@@ -153,7 +153,7 @@
                     >
                     </el-button>
                     <el-button type="warning" icon="el-icon-star-off" circle
-                               size="small"
+                               size="small" @click="addCollectMaterial(scope.row)"
                     ></el-button>
                   </template>
                 </el-table-column>
@@ -359,6 +359,10 @@
           <!--物资信息顶部操作栏-->
           <el-row style="margin-bottom: 10px" :gutter="10">
             <el-col :span="9">
+              <span>物资信息</span><br>
+              <span style="font-size: 12px;color: #409EFF">右侧可以进行查询和物资分配筛选</span>
+            </el-col>
+            <el-col :span="9">
               <el-input placeholder="物资名称" clearable v-model="materParam.search" @clear="getMaterialInfo">
                 <template slot="append">
                   <el-button slot="append" icon="el-icon-search" type="primary"
@@ -366,7 +370,7 @@
                 </template>
               </el-input>
             </el-col>
-            <el-col :span="7">
+            <el-col :span="6">
               <el-cascader :options="cateInfo" :props="cascadeParams"  placeholder="物资分类"
                            :show-all-levels='false' clearable v-model="materParam.type"
                            @change="getMaterialInfo" style="width: 120px"
@@ -435,9 +439,58 @@
           </el-pagination>
         </el-card>
       </el-col>
-      <el-col :span="7">
-        <el-card>
-          <el-button></el-button>
+      <el-col :span="6">
+        <!--系统介绍与教程-->
+        <el-card style="padding: 10px">
+          <el-alert
+              title="欢迎使用疫情物资分配系统"
+              type="success"
+              :closable="false"
+              description="以下是相关教程,可以让您快速熟悉物资申请等操作"
+              show-icon>
+          </el-alert>
+          <el-collapse accordion>
+            <el-collapse-item>
+              <template v-slot:title>
+                <svg t="1676434114757" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2858" width="32" height="32"><path d="M925.4 399.2c0.4 2.4 0.6 4.7 0.6 7.2v505.3c0 1.4-0.1 2.7-0.2 4.1-1.3 23.6-20.8 42.1-44.5 42.2H141c-24.6 0-44.6-20-44.6-44.6v-507c0-2.3 0.2-4.6 0.5-6.8-0.3-2.6-0.5-5.2-0.5-7.8V362l-0.2-0.1 116.9-202.3c10.2-17.8 28.9-29 49.4-29.6 4.3-1.3 8.7-2 13.2-2h470.5c4.8 0 9.6 0.8 14.2 2.3 20.3 0.8 38.9 12 49 29.6l116.8 202.3-0.6 0.4v29.2c0.2 2.5 0.1 5-0.2 7.4z m-79.4-36c-1.7-2.5-3.2-5.2-4.6-8L758.2 186H281.4l-87.2 177.2H846z m6.1 60H170.4v474.3h681.7V423.2z" p-id="2859" fill="#409EFF"></path><path d="M739.3 665.8h-240c-15.4 0-28-12.6-28-28s12.6-28 28-28h240c15.4 0 28 12.6 28 28s-12.6 28-28 28zM481.7 407.6V144.8c0-1.1 0.9-2 2-2H539c1.1 0 2 0.9 2 2v262.8c0 1.1-0.9 2-2 2h-55.3c-1.1 0-2-0.9-2-2zM739.8 793.9h-390c-15.4 0-28-12.6-28-28s12.6-28 28-28h390c15.4 0 28 12.6 28 28s-12.6 28-28 28z" p-id="2860" fill="#409EFF"></path></svg>
+                <span style="margin-left: 10px">
+                  如何进行物资申请
+                </span>
+              </template>
+            </el-collapse-item>
+            <el-collapse-item>
+              <template v-slot:title>
+                <svg t="1676434114757" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2858" width="32" height="32"><path d="M925.4 399.2c0.4 2.4 0.6 4.7 0.6 7.2v505.3c0 1.4-0.1 2.7-0.2 4.1-1.3 23.6-20.8 42.1-44.5 42.2H141c-24.6 0-44.6-20-44.6-44.6v-507c0-2.3 0.2-4.6 0.5-6.8-0.3-2.6-0.5-5.2-0.5-7.8V362l-0.2-0.1 116.9-202.3c10.2-17.8 28.9-29 49.4-29.6 4.3-1.3 8.7-2 13.2-2h470.5c4.8 0 9.6 0.8 14.2 2.3 20.3 0.8 38.9 12 49 29.6l116.8 202.3-0.6 0.4v29.2c0.2 2.5 0.1 5-0.2 7.4z m-79.4-36c-1.7-2.5-3.2-5.2-4.6-8L758.2 186H281.4l-87.2 177.2H846z m6.1 60H170.4v474.3h681.7V423.2z" p-id="2859" fill="#409EFF"></path><path d="M739.3 665.8h-240c-15.4 0-28-12.6-28-28s12.6-28 28-28h240c15.4 0 28 12.6 28 28s-12.6 28-28 28zM481.7 407.6V144.8c0-1.1 0.9-2 2-2H539c1.1 0 2 0.9 2 2v262.8c0 1.1-0.9 2-2 2h-55.3c-1.1 0-2-0.9-2-2zM739.8 793.9h-390c-15.4 0-28-12.6-28-28s12.6-28 28-28h390c15.4 0 28 12.6 28 28s-12.6 28-28 28z" p-id="2860" fill="#409EFF"></path></svg>
+                <span style="margin-left: 10px">
+                  如何进行配额申请
+                </span>
+              </template>
+            </el-collapse-item>
+            <el-collapse-item>
+              <template v-slot:title>
+                <svg t="1676434114757" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2858" width="32" height="32"><path d="M925.4 399.2c0.4 2.4 0.6 4.7 0.6 7.2v505.3c0 1.4-0.1 2.7-0.2 4.1-1.3 23.6-20.8 42.1-44.5 42.2H141c-24.6 0-44.6-20-44.6-44.6v-507c0-2.3 0.2-4.6 0.5-6.8-0.3-2.6-0.5-5.2-0.5-7.8V362l-0.2-0.1 116.9-202.3c10.2-17.8 28.9-29 49.4-29.6 4.3-1.3 8.7-2 13.2-2h470.5c4.8 0 9.6 0.8 14.2 2.3 20.3 0.8 38.9 12 49 29.6l116.8 202.3-0.6 0.4v29.2c0.2 2.5 0.1 5-0.2 7.4z m-79.4-36c-1.7-2.5-3.2-5.2-4.6-8L758.2 186H281.4l-87.2 177.2H846z m6.1 60H170.4v474.3h681.7V423.2z" p-id="2859" fill="#409EFF"></path><path d="M739.3 665.8h-240c-15.4 0-28-12.6-28-28s12.6-28 28-28h240c15.4 0 28 12.6 28 28s-12.6 28-28 28zM481.7 407.6V144.8c0-1.1 0.9-2 2-2H539c1.1 0 2 0.9 2 2v262.8c0 1.1-0.9 2-2 2h-55.3c-1.1 0-2-0.9-2-2zM739.8 793.9h-390c-15.4 0-28-12.6-28-28s12.6-28 28-28h390c15.4 0 28 12.6 28 28s-12.6 28-28 28z" p-id="2860" fill="#409EFF"></path></svg>
+                <span style="margin-left: 10px">
+                  其他问题
+                </span>
+              </template>
+            </el-collapse-item>
+          </el-collapse>
+        </el-card>
+        <!--物资收藏菜单-->
+        <el-card style="margin-top: 10px">
+          <el-divider>
+            <svg t="1676469351396" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7233" width="32" height="32"><path d="M174.592 378.88c10.752-36.352 44.032-61.952 81.92-63.488h600.064c0-54.272-44.032-98.304-98.304-98.304H389.12l-36.864-67.584c-7.168-18.432-25.6-30.72-45.568-31.232H118.784C64.512 118.784 20.48 162.816 20.48 217.088v516.096c0 37.888 22.016 72.704 56.832 88.576l97.28-442.88zM844.8 778.24c5.632-10.24 9.728-20.992 11.776-32.256L844.8 778.24z" fill="#409EFF" p-id="7234"></path><path d="M915.968 364.544H305.664c-37.888 1.024-71.168 26.624-81.92 63.488l-104.448 477.696h688.128c37.888-1.536 71.168-27.136 81.92-63.488l108.544-344.064c22.016-64.512-20.48-133.632-81.92-133.632z m-202.24 251.904l-62.976 61.952 14.848 87.552c1.536 7.168-1.024 14.336-6.144 18.944-2.56 2.56-6.144 3.584-9.728 3.072-3.584 0-7.68-1.024-10.752-3.072l-77.824-40.96-77.824 41.472c-6.144 4.096-14.336 4.096-19.968 0-5.632-4.608-8.192-11.776-6.144-18.944l14.848-87.552-62.976-62.464c-7.68-5.632-9.728-15.872-4.096-23.552 3.072-4.608 8.192-7.168 13.824-7.168l87.552-12.8 39.424-79.872c3.072-8.704 12.8-13.312 21.504-10.24 4.608 1.536 8.704 5.632 10.24 10.24l39.424 79.872 87.552 12.8c9.216 0 16.896 7.68 16.896 17.408 0 5.12-3.072 10.24-7.68 13.312z" fill="#409EFF" p-id="7235"></path></svg>
+            <span style="position: relative;left: 10px;top: -10px">物资收藏菜单</span>
+          </el-divider>
+          <div style="padding: 10px">
+            <el-tag v-for="item in collectMaterial" :key="item._id"
+                    closable @close="removeCollectMaterial(item._id)"
+                    style="margin-right: 10px;margin-bottom: 5px"
+                    @click="collectMaterialTagClick(item.material_id.name)"
+            >
+              {{item.material_id.name}}
+            </el-tag>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -616,6 +669,8 @@ export default {
           '特殊物资紧缺;',
           '家庭成员生病,急需物资;',
       ],
+      // 收藏物资列表
+      collectMaterial:[]
     }
   },
   methods:{
@@ -837,12 +892,51 @@ export default {
       if(tab.label === '配额申请记录'){
         this.getQuotaChanges()
       }
+    },
+    // 获取收藏物资列表
+    getCollectMaterial(){
+      const user_id = sessionStorage.getItem('user_id') || localStorage.getItem('user_id')
+      this.$request(`collect-material/${user_id}`,'get').then(value => {
+        if(value.status !== 200){
+          return this.$message.error('获取收藏物资失败')
+        }
+        this.collectMaterial = value.data
+      })
+    },
+    // 收藏选定物资
+    addCollectMaterial(row) {
+      this.$request(`collect-material`,'post',{
+        user_id:this.userinfo._id,
+        material_id:row.id
+      }).then(value => {
+        if(value.status !== 201){
+          return this.$message.error('收藏物资失败')
+        }
+        this.$message.success('成功收藏该物资')
+        this.getCollectMaterial()
+      })
+    },
+    // 删除选定收藏物资
+    removeCollectMaterial(id){
+      this.$request(`collect-material/${id}`,'delete').then(value => {
+        if(value.status !== 204){
+          return this.$message.error('取消收藏物资失败')
+        }
+        this.$message.success('取消收藏该物资')
+        this.getCollectMaterial()
+      })
+    },
+    // 点击收藏物资tag时
+    collectMaterialTagClick(name){
+      this.materParam.search = name
+      this.getMaterialInfo()
     }
   },
   created() {
     this.getUserInfo()
     this.getMaterialInfo()
     this.getCateInfo()
+    this.getCollectMaterial()
     this.token.Authorization = sessionStorage.getItem('token') || localStorage.getItem('token')
   },
   computed:{
@@ -856,7 +950,8 @@ export default {
     },
     // 判断用户配是否完成关键信息的填写
     userInfoDone(){
-      return this.userinfo.address !== '' && this.userInfo.phone !== ''
+      // return this.userinfo.address !== '' && this.userInfo.phone !== ''
+      return true
     },
     // 判断用户配额是否足够本次申请
    enoughQuota(){
@@ -872,7 +967,7 @@ export default {
   padding: 10px;
 }
 .user-card{
-  width: 92%;
+  width: 93%;
   min-width: 520px;
   height: 330px;
   padding: 20px;
@@ -881,7 +976,7 @@ export default {
   min-width: 520px;
   max-height: 580px;
   overflow: auto;
-  width: 92%;
+  width: 93%;
   margin-top: 10px;
   padding: 20px;
 }
