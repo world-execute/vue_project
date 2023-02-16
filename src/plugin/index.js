@@ -10,7 +10,7 @@ import {
     Checkbox,Switch,Link,Avatar,Descriptions,DescriptionsItem,
     Tag,Progress,MessageBox,Dialog,Tabs,TabPane,Upload,Table,TableColumn,
     Pagination,Cascader,InputNumber,Alert,Slider,Select,Option,Collapse,
-    CollapseItem,Divider
+    CollapseItem,Divider,Step,Steps,Timeline,TimelineItem
 } from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -46,6 +46,10 @@ Vue.use(Option)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
 Vue.use(Divider)
+Vue.use(Step)
+Vue.use(Steps)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 Vue.prototype.$message = Message
 Vue.prototype.$request = request
 Vue.prototype.$confirm = MessageBox.confirm
